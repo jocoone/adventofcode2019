@@ -1,0 +1,26 @@
+{
+  "name": "adventofcode2019",
+  "version": "1.0.0",
+  "description": "Advent of Code 2019",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jocoone/adventofcode2019.git"
+  },
+  "author": "Joey Comhaire",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jocoone/adventofcode2019/issues"
+  },
+  "homepage": "https://github.com/jocoone/adventofcode2019#readme",
+  "dependencies": {
+    "lodash": "^4.17.15",
+    "moment": "^2.24.0"
+  },
+  "devDependencies": {
+    "yargs": "^15.0.2"
+  }
+}
