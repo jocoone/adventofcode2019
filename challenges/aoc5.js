@@ -19,13 +19,53 @@ class IntCodeRunner {
     this.i = 0;
   }
 
-  getParameter (parameterMode, position) {
+  terminate() {
+    this.terminated = true;
+  }
+
+  run(x) {
+    this.inputs.push(x);
+  
+    while (!this.terminated) {
+      const instructionInfo = this._getParameterInfo(this.memory[this.i]);
+      const { opcode, p1, p2 } = instructionInfo;
+  
+      if(opcode === 1) {
+        this._add(p1, p2);
+      } else if(opcode === 2) {
+        this._multiply(p1, p2)
+      } else if(opcode === 3) {
+        this._set();
+      } else if(opcode === 4) {
+        this._setResult(p1);
+        if (this.break) {
+          break;
+        }
+      } else if(opcode === 5) {
+        this._notEqualZeroPointer(p1, p2);
+      } else if(opcode === 6) {
+        this._equalZeroPointer(p1, p2);
+      } else if(opcode === 7) {
+        this._smallerThen(p1, p2);
+      } else if(opcode === 8) {
+        this._greaterThen(p1, p2);
+      } else if (opcode === 99) {
+        this.terminate();
+      } else {
+        throw new Error('Unknown opcode: ' + opcode);
+      }      
+    }
+  
+    return this.result;
+  }
+
+  _getParameter (parameterMode, position) {
     return parameterMode === 0
       ? this.memory[this.memory[position]]
       : this.memory[position];
   }
 
-  getParameterInfo(p) {
+  _getParameterInfo(p) {
     const instruction = ('' + p).padStart(5, '0');
     const opcode = Number(instruction.substring(instruction.length - 2));
     const p1 = Number(instruction[instruction.length - 3]);
@@ -34,82 +74,61 @@ class IntCodeRunner {
     return { opcode, p1, p2, p3 };
   }
 
-  run(x) {
-    let res = null;
-    this.inputs.push(x);
-  
-    while (!this.terminated) {
-      const instructionInfo = this.getParameterInfo(this.memory[this.i]);
-      const { opcode, p1, p2 } = instructionInfo;
-  
-      if(opcode === 1) {
-        const i1 = this.getParameter(p1, this.i + 1);
-        const i2 = this.getParameter(p2, this.i + 2);
-        const output = this.memory[this.i + 3];
-        this.memory[output] = i1 + i2;
-        this.i += 4
-      } else if(opcode === 2) {
-        const i1 = this.getParameter(p1, this.i + 1);
-        const i2 = this.getParameter(p2, this.i + 2);
-        const output = this.memory[this.i + 3];
-        this.memory[output] = i1 * i2;
-        this.i += 4
-      } else if(opcode === 3) {
-        const output = this.memory[this.i + 1];
-        const sh = this.inputs.shift();
-        this.memory[output] = sh;
-        this.i += 2
-      } else if(opcode === 4) {
-        const output = this.getParameter(p1, this.i + 1);
-        res = output;
-        this.i += 2;
-        if (this.break) {
-          break;
-        }
-      } else if(opcode === 5) {
-        const i1 = this.getParameter(p1, this.i + 1);
-  
-        if (i1 !== 0) {
-          const i2 = this.getParameter(p2, this.i + 2);
+  _add(parameterMode1, parameterMode2) {
+    const parameter1 = this._getParameter(parameterMode1, this.i + 1);
+    const parameter2 = this._getParameter(parameterMode2, this.i + 2);
+    const output = this.memory[this.i + 3];
+    this.memory[output] = parameter1 + parameter2;
+    this.i += 4
+  }
 
-          this.i = i2;
-        } else {
-          this.i += 3
-        }
-      } else if(opcode === 6) {
-        const i1 = this.getParameter(p1, this.i + 1);
+  _multiply(parameterMode1, parameterMode2) {
+    const parameter1 = this._getParameter(parameterMode1, this.i + 1);
+    const parameter2 = this._getParameter(parameterMode2, this.i + 2);
+    const output = this.memory[this.i + 3];
+    this.memory[output] = parameter1 * parameter2;
+    this.i += 4
+  }
+
+  _set() {
+    const output = this.memory[this.i + 1];
+    const sh = this.inputs.shift();
+    this.memory[output] = sh;
+    this.i += 2
+  }
+
+  _setResult(parameterMode1) {
+    const output = this._getParameter(parameterMode1, this.i + 1);
+    this.result = output;
+    this.i += 2;
+  }
+
+  _notEqualZeroPointer(parameterMode1, parameterMode2) {
+    const parameter1 = this._getParameter(parameterMode1, this.i + 1);
+    this.i = (parameter1 !== 0 ? this._getParameter(parameterMode2, this.i + 2) : this.i + 3);
+  }
   
-        if (i1 === 0) {
-          const i2 = this.getParameter(p2, this.i + 2);
-  
-          this.i = i2;
-        } else {
-          this.i += 3
-        }
-      } else if(opcode === 7) {
-        const i1 = this.getParameter(p1, this.i + 1);
-        const i2 = this.getParameter(p2, this.i + 2);
-        const output = this.memory[this.i + 3];
-        this.memory[output] = i1 < i2 ? 1 : 0;
-        this.i += 4;
-      } else if(opcode === 8) {
-        const i1 = this.getParameter(p1, this.i + 1);
-        const i2 = this.getParameter(p2, this.i + 2);
-        const output = this.memory[this.i + 3];
-        this.memory[output] = i1 === i2 ? 1 : 0;
-        this.i += 4;
-      } else if (opcode === 99) {
-        this.terminated = true;
-      } else {
-        throw new Error('Unknown opcode: ' + opcode);
-      }      
-    }
-  
-    return res;
+  _equalZeroPointer(parameterMode1, parameterMode2) {
+    const parameter1 = this._getParameter(parameterMode1, this.i + 1);
+    this.i = (parameter1 === 0 ? this._getParameter(parameterMode2, this.i + 2) : this.i + 3);
+  }
+
+  _smallerThen(parameterMode1, parameterMode2) {
+    const parameter1 = this._getParameter(parameterMode1, this.i + 1);
+    const parameter2 = this._getParameter(parameterMode2, this.i + 2);
+    const output = this.memory[this.i + 3];
+    this.memory[output] = parameter1 < parameter2 ? 1 : 0;
+    this.i += 4;
+  }
+
+  _greaterThen(parameterMode1, parameterMode2) {
+    const parameter1 = this._getParameter(parameterMode1, this.i + 1);
+    const parameter2 = this._getParameter(parameterMode2, this.i + 2);
+    const output = this.memory[this.i + 3];
+    this.memory[output] = parameter1 === parameter2 ? 1 : 0;
+    this.i += 4;
   }
 }
-
-run();
 
 module.exports = IntCodeRunner;
 
