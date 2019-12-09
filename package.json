@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test:day7": "jest ./__tests__/day7.spec.js",
-    "test:day8": "jest ./__tests__/day8.spec.js"
+    "test:day8": "jest ./__tests__/day8.spec.js",
+    "test:day9": "jest ./__tests__/day9.spec.js"
   },
   "repository": {
     "type": "git",
