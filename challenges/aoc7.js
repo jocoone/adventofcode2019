@@ -1,6 +1,6 @@
 const { readLines } = require('../utils/readandwrite');
-const IntCodeRunner = require('./aoc5.js');
-const { intersection, uniq } = require('lodash');
+const IntCodeRunner = require('../common/icc');
+const { uniq } = require('lodash');
 
 function getProgram(input) {
   const lines = readLines(input);
