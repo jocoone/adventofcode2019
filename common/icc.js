@@ -35,7 +35,7 @@ class Instruction {
 }
 
 class IntCodeRunner {
-  constructor(instructions, phase, b = true) {
+  constructor(instructions, phase, b = 1) {
     this.inputs = [...phase];
     this.memory = [...instructions];
     this.break = b;
@@ -67,9 +67,13 @@ class IntCodeRunner {
     this.terminated = true;
   }
 
+  clear() {
+    this.result = [];
+  }
+
   run(x) {
     this.inputs.push(x);
-  
+    let breaks = 1;
     while (!this.terminated) {
       const instruction = new Instruction(this.memory[this.i]);
       const opcode = instruction.getOpcode();
@@ -80,8 +84,11 @@ class IntCodeRunner {
         instruction.getParameter3()
       );
 
-      if(opcode === 4 && this.break) {
-        break;
+      if(opcode === 4) {
+        if (this.break === breaks) {
+          break;
+        }
+        breaks++;
       }    
     }
   
