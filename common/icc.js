@@ -131,8 +131,7 @@ class IntCodeRunner {
 
   _set(parameterMode1) {
     const output = this._getAddress(parameterMode1, this.i + 1);
-    const sh = this.inputs.shift();
-    this.memory[output] = sh;
+    this.memory[output] = this.inputs.shift();
     this.i += 2
   }
 
