@@ -1,4 +1,4 @@
-const { readLines } = require('..utils/readandwrite');
+const { readLines } = require('../utils/readandwrite');
 const { uniqBy, find } = require('lodash');
 const IntCodeRunner = require('../common/icc');
 
@@ -25,12 +25,14 @@ const ALPHABET = {
   O: ' XX X  XX  XX  XX  X XX ',
   P: 'XXX X  XXXX X   X   X   ',
   Q: '',
-  R: 'XXX X  XXXX XX  X X X  X',
+  R: 'XXX X  XX  XXXX X X X  X',
   S: ' XX X  XXXX    X   XXXX ',
   T: '',
   U: 'X  XX  XX  XX  XX  X XX ',
   V: '',
   W: '',
+  X: '',
+  Y: '',
   Z: 'XXXX   X  X  X  X   XXXX',
 };
 
@@ -126,7 +128,7 @@ function part1(file) {
   painter.draw();
 
   console.timeEnd('aoc11p1');
-  return painter.coordinates;
+  return uniqBy(painter.coordinates, x => x.x + '-' + x.y).length;
 }
 
 function part2(file) {
@@ -162,10 +164,11 @@ function part2(file) {
   return sentence;
 }
 
-const coordinates = part1('aoc11.txt');
-const text = part2('aoc11.txt');
-console.log(`Part #1: Number of visited coordinates: ${uniqBy(coordinates, x => x.x + '-' + x.y).length}`);
-console.log(`Part #2: Registration identifier: \n${text}`);
+const input = readLines('input/aoc11.txt')[0].split(',').map(Number);
+const painter = new Painter(input, 0);
+painter.draw();
+const visualisation = painter.visualise(painter.coordinates);
+console.log(visualisation.map(x => x.join(' ')).join('\n'));
 
 module.exports = {
   part1, part2

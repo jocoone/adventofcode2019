@@ -7,7 +7,8 @@
     "test:day7": "jest ./__tests__/day7.spec.js",
     "test:day8": "jest ./__tests__/day8.spec.js",
     "test:day9": "jest ./__tests__/day9.spec.js",
-    "test:day10": "jest ./__tests__/day10.spec.js"
+    "test:day10": "jest ./__tests__/day10.spec.js",
+    "test:day11": "jest ./__tests__/day11.spec.js"
   },
   "repository": {
     "type": "git",
