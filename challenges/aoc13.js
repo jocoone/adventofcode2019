@@ -8,21 +8,27 @@ class Draw {
         this.block = block;
     }
 }
-
-function countBlocks(res) {
-    const blocks = []
+function createBlocks(res) {
+    const blocks = [];
     for (let i = 0; i < res.length; i+=3) {
         blocks.push(new Draw(res[i], res[i + 1], res[i + 2]));
     }
-    return blocks.filter(b => b.block === 2).length;
+    return blocks;
+}
+function countBlocks(blocks, type) {
+    let count = 0;
+    for (let i = 0; i < blocks.length; i+=3) {
+        if (blocks[i + 2] === type) {
+            count++;
+        }
+    }
+    return count;
 }
 
 function part1(file) {
     console.time('aoc13p1');
     const program = readLines(file)[0].split(',').map(Number);
-    const intCodeComputer = new IntCodeProgram(program, [], 0);
-    const res = intCodeComputer.run();
-    const result = countBlocks(res);
+    const result = countBlocks(new IntCodeProgram(program, [], 0).run(), 2);
     console.timeEnd('aoc13p1');
     return result;
 }
@@ -30,40 +36,43 @@ function part1(file) {
 function part2(file) {
     console.time('aoc13p2');
     const program = readLines(file)[0].split(',').map(Number);
-    const intCodeComputer = new IntCodeProgram(program, [], 0);
-
-    let res = intCodeComputer.run(0);
-
+    program[0] = 2;
+    let ballX = 0;
+    let paddleX = 0;
     let lastScore = 0;
 
-    while(countBlocks(res) > 0) {
-        console.log(intCodeComputer.copy(3).run(0));
-        const [,,score1] = intCodeComputer.copy(3).run(0);
-        const [,,score2] = intCodeComputer.copy(3).run(1);
-        const [,,score3] = intCodeComputer.copy(3).run(-1);
+    function joyStick() {
+        if(ballX < paddleX) return -1;
+        if(ballX > paddleX) return 1;
+        return 0;
+    }
 
-        const maxScore = Math.max([score1, score2, score3]);
-        if (maxScore === score3) {
-            res = intCodeComputer.run(-1);
-        } else if (maxScore === score2) {
-            res = ntCodeComputer.run(1);
-        } else {
-            res = intCodeComputer.run(0);
-        }
-        for (let i = 0; i < res.length; i+= 3) {
-            if (res[i] === -1 && res[i + 1] === 0) {
-                lastScore = res[i + 2];
-                break;
+    function game(result) {
+        if (result.length === 3) {
+            const x = result.shift();
+            const y = result.shift();
+            const value = result.shift();
+
+            if (x === -1 && y === 0) {
+                lastScore = value;
+            }
+
+            if (value === 3) {
+                paddleX = x;
+            }
+
+            if (value === 4) {
+                ballX = x;
             }
         }
-    }    
+    }
+
+    const inputs = [];
+    new IntCodeProgram(program, inputs, 0, game, joyStick).run(0);
 
     console.timeEnd('aoc13p2');
     return lastScore;
 }
-
-console.log(`Part #1: ${part1('input/aoc13.txt')} block tiles when the game starts.`);
-console.log(`Part #2: ${part2('input/aoc13.txt')} score`);
 
 module.exports = {
     part1, part2

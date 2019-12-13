@@ -35,7 +35,11 @@ class Instruction {
 }
 
 class IntCodeRunner {
-  constructor(instructions, phase, b = 1) {
+  constructor(instructions,
+              phase,
+              b = 1,
+              outputSignal = () => {},
+              inputSignal = inputs => inputs.shift()) {
     this.inputs = [...phase];
     this.memory = [...instructions];
     this.break = b;
@@ -43,6 +47,11 @@ class IntCodeRunner {
     this.i = 0;
     this.relativeBase = 0;
     this.result = [];
+    this.outputSignal = value => {
+      this.result.push(value);
+      outputSignal(this.result)
+    };
+    this.inputSignal = inputSignal;
     this.opcodes = {
       1: this._add.bind(this),
       2: this._multiply.bind(this),
@@ -135,13 +144,13 @@ class IntCodeRunner {
 
   _set(parameterMode1) {
     const output = this._getAddress(parameterMode1, this.i + 1);
-    this.memory[output] = this.inputs.shift();
+    this.memory[output] = this.inputSignal(this.inputs);
     this.i += 2
   }
 
   _setResult(parameterMode1) {
     const output = this._getParameter(parameterMode1, this.i + 1);
-    this.result.push(output);
+    this.outputSignal(output);
     this.i += 2;
   }
 
