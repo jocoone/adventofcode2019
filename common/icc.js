@@ -57,6 +57,10 @@ class IntCodeRunner {
     }
   }
 
+  copy(b) {
+    return new IntCodeRunner(this.memory, [...this.inputs], b || this.break);
+  }
+
   enlargeMemory() {
     for (let i = 0; i < 5000; i++) {
       this.memory.push(0);
@@ -85,7 +89,7 @@ class IntCodeRunner {
       );
 
       if(opcode === 4) {
-        if (this.break === breaks) {
+        if (this.break != 0 && this.break === breaks) {
           break;
         }
         breaks++;
