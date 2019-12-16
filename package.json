@@ -10,7 +10,8 @@
     "test:day10": "jest ./__tests__/day10.spec.js",
     "test:day11": "jest ./__tests__/day11.spec.js",
     "test:day12": "jest ./__tests__/day12.spec.js",
-    "test:day13": "jest ./__tests__/day13.spec.js"
+    "test:day13": "jest ./__tests__/day13.spec.js",
+    "test:day16": "jest ./__tests__/day16.spec.js"
   },
   "repository": {
     "type": "git",
