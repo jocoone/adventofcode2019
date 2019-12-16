@@ -23,11 +23,14 @@
   },
   "homepage": "https://github.com/jocoone/adventofcode2019#readme",
   "dependencies": {
-    "lodash": "^4.17.15",
+    "cli": "^1.0.1",
+    "interact": "0.0.3",
     "moment": "^2.24.0"
   },
   "devDependencies": {
     "jest": "^24.9.0",
+    "lodash": "^4.17.15",
+    "readline-sync": "^1.4.10",
     "yargs": "^15.0.2"
   }
 }

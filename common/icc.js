@@ -40,7 +40,7 @@ class IntCodeRunner {
               b = 1,
               outputSignal = () => {},
               inputSignal = inputs => inputs.shift()) {
-    this.inputs = [...phase];
+    this.inputs = phase;
     this.memory = [...instructions];
     this.break = b;
     this.terminated = false;
