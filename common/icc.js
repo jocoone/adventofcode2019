@@ -39,7 +39,8 @@ class IntCodeRunner {
               phase,
               b = 1,
               outputSignal = () => {},
-              inputSignal = inputs => inputs.shift()) {
+              inputSignal = inputs => inputs.shift(),
+              clear = false) {
     this.inputs = phase;
     this.memory = [...instructions];
     this.break = b;
@@ -49,7 +50,10 @@ class IntCodeRunner {
     this.result = [];
     this.outputSignal = value => {
       this.result.push(value);
-      outputSignal(this.result)
+      outputSignal(this.result, value);
+      if (clear) {
+        this.result = [];
+      }
     };
     this.inputSignal = inputSignal;
     this.opcodes = {
@@ -85,7 +89,9 @@ class IntCodeRunner {
   }
 
   run(x) {
-    this.inputs.push(x);
+    if (x) {
+      this.inputs.push(x);
+    }
     let breaks = 1;
     while (!this.terminated) {
       const instruction = new Instruction(this.memory[this.i]);
