@@ -40,7 +40,8 @@ class IntCodeRunner {
               b = 1,
               outputSignal = () => {},
               inputSignal = inputs => inputs.shift(),
-              clear = false) {
+              clear = false,
+              breakSignal = () => false) {
     this.inputs = phase;
     this.memory = [...instructions];
     this.break = b;
@@ -55,6 +56,7 @@ class IntCodeRunner {
         this.result = [];
       }
     };
+    this.breakSignal = breakSignal;
     this.inputSignal = inputSignal;
     this.opcodes = {
       1: this._add.bind(this),
@@ -97,11 +99,14 @@ class IntCodeRunner {
       const instruction = new Instruction(this.memory[this.i]);
       const opcode = instruction.getOpcode();
 
-      this.opcodes[opcode](
+      const value = this.opcodes[opcode](
         instruction.getParameter1(),
         instruction.getParameter2(),
         instruction.getParameter3()
       );
+      if (this.breakSignal(value, opcode)) {
+        break;
+      } 
 
       if(opcode === 4) {
         if (this.break != 0 && this.break === breaks) {
@@ -138,6 +143,7 @@ class IntCodeRunner {
     const output = this._getAddress(parameterMode3, this.i + 3);
     this.memory[output] = parameter1 + parameter2;
     this.i += 4
+    return this.memory[output];
   }
 
   _multiply(parameterMode1, parameterMode2, parameterMode3) {
@@ -146,12 +152,14 @@ class IntCodeRunner {
     const output = this._getAddress(parameterMode3, this.i + 3);
     this.memory[output] = parameter1 * parameter2;
     this.i += 4
+    return this.memory[output];
   }
 
   _set(parameterMode1) {
     const output = this._getAddress(parameterMode1, this.i + 1);
     this.memory[output] = this.inputSignal(this.inputs);
     this.i += 2
+    return this.memory[output]
   }
 
   _setResult(parameterMode1) {
@@ -176,6 +184,7 @@ class IntCodeRunner {
     const output = this._getAddress(parameterMode3, this.i + 3);
     this.memory[output] = parameter1 < parameter2 ? 1 : 0;
     this.i += 4;
+    return this.memory[output]
   }
 
   _equals(parameterMode1, parameterMode2, parameterMode3) {
@@ -184,6 +193,7 @@ class IntCodeRunner {
     const output = this._getAddress(parameterMode3, this.i + 3);
     this.memory[output] = parameter1 === parameter2 ? 1 : 0;
     this.i += 4;
+    return this.memory[output];
   }
 
   _setRelativeBase(parameterMode1) {

@@ -4,6 +4,7 @@
   "description": "Advent of Code 2019",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test:day7": "jest ./__tests__/day7.spec.js",
     "test:day8": "jest ./__tests__/day8.spec.js",
     "test:day9": "jest ./__tests__/day9.spec.js",
@@ -12,6 +13,9 @@
     "test:day12": "jest ./__tests__/day12.spec.js",
     "test:day13": "jest ./__tests__/day13.spec.js",
     "test:day16": "jest ./__tests__/day16.spec.js"
+  },
+  "config": {
+    "year": "2020"
   },
   "repository": {
     "type": "git",
