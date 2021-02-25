@@ -58,11 +58,29 @@ const logTime = (ex = 'exercise', cb) => {
   console.time(ex);
   const result = cb();
   console.timeEnd(ex);
-  if (ex !== 'Parse') {
+  if (!ex.includes('Parse')) {
     console.log(`${ex}: ${result}`);
   }
   return result;
 };
+
+function groupLines(lines) {
+  const result = [];
+  let newGroup = true;
+  for (const line of lines) {
+    if (line === '') {
+      newGroup = true;
+    } else {
+      if (newGroup) {
+        result.push([line]);
+        newGroup = false;
+      } else {
+        result[result.length - 1].push(line);
+      }
+    }
+  }
+  return result;
+}
 
 module.exports = {
   maxBy,
@@ -70,4 +88,5 @@ module.exports = {
   findRoutes,
   toPath,
   logTime,
+  groupLines,
 };

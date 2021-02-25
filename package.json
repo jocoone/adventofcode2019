@@ -4,7 +4,8 @@
   "description": "Advent of Code 2019",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node ghcode.js",
+    "start:aoc": "node index.js",
     "test:day7": "jest ./__tests__/day7.spec.js",
     "test:day8": "jest ./__tests__/day8.spec.js",
     "test:day9": "jest ./__tests__/day9.spec.js",
@@ -29,13 +30,13 @@
   "homepage": "https://github.com/jocoone/adventofcode2019#readme",
   "dependencies": {
     "cli": "^1.0.1",
-    "interact": "0.0.3",
-    "moment": "^2.24.0"
+    "moment": "^2.24.0",
+    "run-parallel": "^1.1.10"
   },
   "devDependencies": {
-    "jest": "^24.9.0",
-    "lodash": "^4.17.15",
+    "jest": "^26.6.3",
+    "lodash": "^4.17.20",
     "readline-sync": "^1.4.10",
-    "yargs": "^15.0.2"
+    "yargs": "^16.2.0"
   }
 }

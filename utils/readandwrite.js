@@ -14,10 +14,9 @@ function write(lines, file) {
   fs.unlink(file, (err) => {
     if (!err) console.log(file + ' was deleted!');
     let result = '';
-    lines.forEach(line => result += line);
-    fs.writeFileSync(file, result, { flag: 'w' })
+    lines.forEach((line) => (result += `${line}\n`));
+    fs.writeFileSync(file, result, { flag: 'w' });
   });
-  
 }
 
 module.exports = { readFile, readLines, write };
